@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="icon" href="/img/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Host — Revive Polls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="topbar">
+    <span class="brand"><span class="brand-logo"><img src="/img/revive-logo-256.png" alt="Revive logo" /></span> Revive Polls</span>
+    <div class="row" style="gap:8px;">
+      <span class="code-chip" id="room-code">-----</span>
+      <button class="btn btn-secondary btn-sm" id="present-btn">Launch Survey ↗</button>
+    </div>
+  </div>
+
+  <div class="wrap-wide">
+    <div id="room-title-row" style="margin: 22px 0 18px;">
+      <h1 id="room-name" style="margin-bottom:4px;">Loading…</h1>
+      <p class="muted" id="participant-count">— participants connected</p>
+    </div>
+
+    <div class="host-grid">
+      <!-- LEFT: share + controls -->
+      <div class="stack">
+        <div class="card center">
+          <h3>Scan to join</h3>
+          <div class="qr-box" id="qr-box"></div>
+          <p style="margin: 14px 0 4px;">
+            <span class="code-chip" id="room-code-2">-----</span>
+          </p>
+          <p class="muted" style="font-size:13px; margin-bottom: 14px;" id="join-url-text"></p>
+          <button class="btn btn-secondary btn-block btn-sm" id="copy-link-btn">Copy join link</button>
+        </div>
+
+        <div class="card">
+          <div class="row between" style="margin-bottom: 4px;">
+            <h3 style="margin:0;">Hide answers</h3>
+            <label class="switch">
+              <input type="checkbox" id="hide-toggle" />
+              <span class="track"><span class="thumb"></span></span>
+            </label>
+          </div>
+          <p class="muted" style="font-size:13px; margin:6px 0 0;">
+            When on, participants and the big screen only see confirmation their answer was submitted — you still see live results here. Turn off to reveal.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="row between" style="margin-bottom: 10px;">
+            <h3 style="margin:0;">Live Q&amp;A wall</h3>
+            <label class="switch">
+              <input type="checkbox" id="qa-open-toggle" checked />
+              <span class="track"><span class="thumb"></span></span>
+            </label>
+          </div>
+          <div id="qa-list"></div>
+          <div class="row" style="margin-top: 12px;">
+            <button class="btn btn-ghost btn-sm" id="qa-clear-btn">Clear all</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: polls -->
+      <div class="stack">
+        <div class="card">
+          <h3>New poll</h3>
+          <div class="tabs" style="margin-bottom: 14px; max-width: 260px;">
+            <button type="button" class="active" data-type="mcq">Multiple choice</button>
+            <button type="button" data-type="rating">Rating (1–5)</button>
+          </div>
+          <div class="field">
+            <label class="field-label" for="poll-question">Question</label>
+            <textarea id="poll-question" maxlength="300" placeholder="What should we tackle first next quarter?"></textarea>
+          </div>
+          <div id="options-editor" class="field"></div>
+          <button class="btn btn-primary" id="add-poll-btn">Add poll</button>
+        </div>
+
+        <div class="card">
+          <h3>Active poll — live results</h3>
+          <div id="active-poll-panel"></div>
+        </div>
+
+        <div class="card">
+          <div class="row between" style="margin-bottom: 10px;">
+            <h3 style="margin:0;">All polls</h3>
+            <div class="row" style="gap:8px;">
+              <button class="btn btn-ghost btn-sm" id="load-template-btn">Load template ⬆</button>
+              <button class="btn btn-ghost btn-sm" id="save-template-btn">Save as template ⬇</button>
+            </div>
+          </div>
+          <input type="file" id="template-file-input" accept="application/json,.json" style="display:none;" />
+          <div id="poll-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .host-grid { display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
+    @media (max-width: 900px) { .host-grid { grid-template-columns: 1fr; } }
+  </style>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/host.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "pulse-live",
+  "version": "1.0.0",
+  "description": "Live polling and audience feedback rooms with QR join, anonymous participants, and a big-screen display. Zero runtime dependencies (plain Node http + Server-Sent Events).",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {},
+  "license": "MIT"
+}

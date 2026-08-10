@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="icon" href="/img/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Revive Polls — live polls & audience feedback</title>
+<meta name="description" content="Run live polls and audience feedback. Join anonymously with a QR code. Results appear live on the big screen." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <span class="brand"><span class="brand-logo"><img src="/img/revive-logo-256.png" alt="Revive logo" /></span> Revive Polls</span>
+  </div>
+
+  <div class="wrap">
+    <div class="center hero">
+      <p class="eyebrow">Revive Youth Ministry</p>
+      <h1 class="hero-title">Live polls &amp; audience feedback</h1>
+      <p class="lede hero-lede">Start a room, put the QR code on the big screen, and watch answers roll in — fully anonymous, no sign-up.</p>
+    </div>
+
+    <div class="card">
+      <span class="card-num">01</span>
+      <h2>Host a session</h2>
+      <p class="lede" style="margin-bottom:16px;">Create a room, run multiple-choice or rating polls, and open a live Q&amp;A wall.</p>
+      <div class="field">
+        <label class="field-label" for="room-name">Session name (optional)</label>
+        <input type="text" id="room-name" placeholder="e.g. Team Offsite Kickoff" maxlength="80" />
+      </div>
+      <button class="btn btn-primary btn-block" id="create-btn">Create room</button>
+    </div>
+
+    <div class="card">
+      <span class="card-num">02</span>
+      <h2>Join a session</h2>
+      <p class="lede" style="margin-bottom:16px;">Scan the QR code shown on screen, or enter the room code below.</p>
+      <div class="row">
+        <div class="grow field" style="margin-bottom:0;">
+          <input type="text" id="join-code" placeholder="ROOM CODE" maxlength="5" style="text-transform:uppercase; letter-spacing:0.12em; font-weight:700; text-align:center;" />
+        </div>
+        <button class="btn btn-secondary" id="join-btn">Join</button>
+      </div>
+    </div>
+
+    <p class="center muted" style="margin-top:28px; font-size:13px;">
+      No accounts, no tracking — participants are always anonymous.
+    </p>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script>
+    qs('#create-btn').addEventListener('click', async () => {
+      const btn = qs('#create-btn');
+      btn.disabled = true;
+      btn.textContent = 'Creating…';
+      try {
+        const name = qs('#room-name').value.trim();
+        const { code, hostToken } = await api('POST', '/api/rooms', { name });
+        location.href = `/host/${hostToken}`;
+      } catch (e) {
+        toast(e.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Create room';
+      }
+    });
+
+    function goJoin() {
+      const code = qs('#join-code').value.trim().toUpperCase();
+      if (!code) { toast('Enter a room code first', 'error'); return; }
+      location.href = `/join/${encodeURIComponent(code)}`;
+    }
+    qs('#join-btn').addEventListener('click', goJoin);
+    qs('#join-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') goJoin(); });
+    qs('#join-code').addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase(); });
+  </script>
+</body>
+</html>

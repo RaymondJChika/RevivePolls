@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="icon" href="/img/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Big Screen — Revive Polls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  body { background: var(--page-plane); }
+  .stage { min-height: 100vh; display: flex; flex-direction: column; }
+  .stage-top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 40px;
+  }
+  .stage-brand { display:flex; align-items:center; gap:8px; font-family: var(--font-serif); font-weight:700; font-size:17px; }
+  .stage-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 28px;
+    padding: 0 40px 40px;
+    align-items: stretch;
+  }
+  .stage-body.no-qa { grid-template-columns: 1fr; }
+  .main-panel {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 28px;
+    padding: 48px; display: flex; flex-direction: column; justify-content: center;
+    box-shadow: var(--shadow-1);
+  }
+  .question-text { font-family: var(--font-serif); font-size: 42px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 34px; line-height: 1.2; }
+  .big-bar-row { margin-bottom: 22px; }
+  .big-bar-row:last-child { margin-bottom: 0; }
+  .big-bar-row .bar-label { font-size: 22px; margin-bottom: 10px; }
+  .big-bar-row .bar-track { height: 22px; }
+  .idle-screen { text-align: center; }
+  .idle-screen h1 { font-size: 34px; margin-bottom: 6px; }
+  .idle-screen .qr-box { margin: 22px auto; }
+  .qa-panel {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 28px;
+    padding: 28px; display: flex; flex-direction: column; box-shadow: var(--shadow-1); overflow: hidden;
+  }
+  .qa-panel h3 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px; }
+  .qa-scroll { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .qa-big-item { padding: 14px 16px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--border); }
+  .qa-big-item .txt { font-size: 17px; line-height: 1.4; }
+  .qa-big-item .up { color: var(--accent); font-weight: 700; font-size: 13px; margin-top: 8px; }
+  .status-strip { display:flex; align-items:center; gap: 16px; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="stage-top">
+      <div class="stage-brand"><span class="brand-logo"><img src="/img/revive-logo-256.png" alt="Revive logo" /></span> <span id="stage-room-name">Revive Polls</span></div>
+      <div class="status-strip">
+        <span class="code-chip" id="stage-code" style="font-size:16px;">-----</span>
+        <span class="muted" id="stage-participants">0 joined</span>
+      </div>
+    </div>
+    <div class="stage-body" id="stage-body">
+      <div class="main-panel" id="main-panel"></div>
+      <div class="qa-panel" id="qa-panel">
+        <h3>Live Q&amp;A</h3>
+        <div class="qa-scroll" id="qa-scroll"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/display.js"></script>
+</body>
+</html>

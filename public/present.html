@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="icon" href="/img/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Present — Revive Polls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css" />
+<style>
+  body { background: var(--page-plane); }
+  .pstage { min-height: 100vh; display: flex; flex-direction: column; }
+  .pstage-top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 40px;
+  }
+  .pstage-brand { display:flex; align-items:center; gap:8px; font-family: var(--font-serif); font-weight:700; font-size:17px; }
+  .pstage-main {
+    flex: 1;
+    padding: 0 40px 20px;
+    display: flex;
+  }
+  .p-panel {
+    flex: 1;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 28px;
+    padding: 56px; display: flex; flex-direction: column; justify-content: center;
+    box-shadow: var(--shadow-1);
+  }
+  .p-question { font-family: var(--font-serif); font-size: 46px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 14px; line-height: 1.2; }
+  .p-tally {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 15px; font-weight: 700; color: var(--text-secondary);
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 100px; padding: 6px 14px; margin-bottom: 28px;
+  }
+  .p-tally .n { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  .p-empty { text-align: center; margin: auto; }
+  .p-empty h1 { font-size: 30px; margin-bottom: 8px; }
+  .big-bar-row { margin-bottom: 22px; }
+  .big-bar-row:last-child { margin-bottom: 0; }
+  .big-bar-row .bar-label { font-size: 22px; margin-bottom: 10px; }
+  .big-bar-row .bar-track { height: 22px; }
+  .p-option-plain {
+    font-size: 24px; font-weight: 600; padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .p-option-plain:last-child { border-bottom: none; }
+  .p-scale-hint { font-size: 20px; color: var(--text-secondary); }
+  .pstage-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 18px 40px 28px;
+  }
+  .pstage-bar .side { display: flex; align-items: center; gap: 10px; flex: 1; }
+  .pstage-bar .side.right { justify-content: flex-end; }
+  .nav-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--border-strong); background: var(--surface-1);
+    border-radius: 100px; padding: 12px 22px; font-weight: 700; font-size: 15px;
+    cursor: pointer; color: var(--text-primary); box-shadow: var(--shadow-1);
+  }
+  .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .nav-btn.primary { background: var(--text-primary); color: var(--page-plane); border-color: transparent; }
+  .poll-counter { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .kbd-hint { font-size: 12px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+  <div class="pstage">
+    <div class="pstage-top">
+      <div class="pstage-brand"><span class="brand-logo"><img src="/img/revive-logo-256.png" alt="Revive logo" /></span> <span id="p-room-name">Revive Polls</span></div>
+      <div class="row" style="gap:10px;">
+        <span class="code-chip" id="p-code" style="font-size:15px;">-----</span>
+        <label class="switch">
+          <input type="checkbox" id="p-hide-toggle" />
+          <span class="track"><span class="thumb"></span></span>
+          <span class="switch-label" id="p-hide-label">Hide answers</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="pstage-main">
+      <div class="p-panel" id="p-panel"></div>
+    </div>
+
+    <div class="pstage-bar">
+      <div class="side">
+        <button class="nav-btn" id="p-prev-btn">◀ Prev</button>
+      </div>
+      <div class="row" style="gap:14px; flex-direction:column; align-items:center;">
+        <span class="poll-counter" id="p-counter">— / —</span>
+        <span class="kbd-hint">Use ← → arrow keys, or Space for Next</span>
+      </div>
+      <div class="side right">
+        <button class="nav-btn primary" id="p-next-btn">Next ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/present.js"></script>
+</body>
+</html>
