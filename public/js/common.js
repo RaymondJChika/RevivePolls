@@ -166,6 +166,28 @@ function renderRatingBars(container, poll, rowClass) {
   container.appendChild(el('p', { class: 'muted', style: 'margin:10px 0 0; font-size:13px;' }, [`${total} response${total === 1 ? '' : 's'}`]));
 }
 
+/** Renders the end-of-survey summary — every poll's final chart, in order —
+ *  used identically by the presenter screen and the participant view once
+ *  the host clicks "End Survey", so everyone sees the same aggregated
+ *  results regardless of the hide-answers toggle. */
+function renderSurveySummary(container, polls, blockClass) {
+  container.innerHTML = '';
+  blockClass = blockClass || 'summary-block';
+  if (!polls || !polls.length) {
+    container.appendChild(el('p', { class: 'muted' }, ['No polls were run in this session.']));
+    return;
+  }
+  polls.forEach((poll, i) => {
+    const block = el('div', { class: blockClass });
+    block.appendChild(el('h3', {}, [`${i + 1}. ${poll.question}`]));
+    const chart = el('div');
+    block.appendChild(chart);
+    if (poll.type === 'mcq') renderMcqBars(chart, poll);
+    else renderRatingBars(chart, poll);
+    container.appendChild(block);
+  });
+}
+
 function timeAgo(ts) {
   const s = Math.max(0, Math.floor((Date.now() - ts) / 1000));
   if (s < 5) return 'just now';

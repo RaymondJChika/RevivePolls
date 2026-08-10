@@ -62,6 +62,8 @@ function createRoom(name) {
     createdAt: Date.now(),
     lastActivity: Date.now(),
     hideAnswers: true, // results start hidden until the host reveals them
+    ended: false, // true once the host clicks "End Survey" on the presenter screen
+    statsReleased: false, // true once the host clicks "Release Stats" — participants then see the full summary too
     polls: [], // { id, type: 'mcq'|'rating', question, options?, votes, ratingCounts, voters:Set, status }
     activePollId: null,
     qa: [], // { id, text, upvotes:Set(participantId), createdAt }
@@ -118,14 +120,21 @@ function qaView(room, forHost) {
 
 function roomStateFor(room, { forHost }) {
   const activePoll = room.polls.find((p) => p.id === room.activePollId) || null;
+  // The host (presenter screen) always sees full results once the survey
+  // ends. Participants only get the full poll list once the host explicitly
+  // clicks "Release Stats" — until then they just see a "survey ended"
+  // screen, regardless of the hide-answers toggle.
+  const showAllPolls = forHost || room.statsReleased;
   return {
     code: room.code,
     name: room.name,
     hideAnswers: room.hideAnswers,
     qaOpen: room.qaOpen,
+    ended: room.ended,
+    statsReleased: room.statsReleased,
     participantCount: room.participants.size,
     activePoll: forHost ? hostPollView(activePoll) : pollPublicView(activePoll, room.hideAnswers),
-    polls: forHost ? room.polls.map(hostPollView) : undefined,
+    polls: showAllPolls ? room.polls.map(hostPollView) : undefined,
     qa: qaView(room, forHost),
   };
 }
@@ -434,6 +443,31 @@ route('POST', '/api/host/polls/:pollId/launch', withHostRoom((req, res, params, 
   room.polls.forEach((p) => { if (p.status === 'active') p.status = 'ended'; });
   poll.status = 'active';
   room.activePollId = poll.id;
+  // Launching a poll after "End Survey" resumes the session.
+  room.ended = false;
+  room.statsReleased = false;
+  touch(room);
+  ok(res);
+  broadcastState(room);
+}));
+
+route('POST', '/api/host/end-survey', withHostRoom((req, res, params, room) => {
+  room.polls.forEach((p) => { if (p.status === 'active') p.status = 'ended'; });
+  room.activePollId = null;
+  room.ended = true;
+  room.statsReleased = false; // ending the survey doesn't reveal results by itself
+  touch(room);
+  ok(res);
+  broadcastState(room);
+}));
+
+route('POST', '/api/host/release-stats', withHostRoom((req, res, params, room) => {
+  // Releasing stats implies the survey is over — end it too if the host
+  // hasn't explicitly done that yet.
+  room.polls.forEach((p) => { if (p.status === 'active') p.status = 'ended'; });
+  room.activePollId = null;
+  room.ended = true;
+  room.statsReleased = true;
   touch(room);
   ok(res);
   broadcastState(room);

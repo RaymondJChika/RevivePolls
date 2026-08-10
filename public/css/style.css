@@ -122,6 +122,8 @@ a { color: inherit; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: 8px;
   gap: 12px;
   padding: 12px 20px;
   border-bottom: 1px solid var(--border);
@@ -130,6 +132,24 @@ a { color: inherit; }
   top: 0;
   z-index: 20;
 }
+.topbar .row { flex-wrap: wrap; row-gap: 8px; justify-content: flex-end; }
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 17px;
+  flex: none;
+  transition: background 0.15s ease;
+}
+.back-btn:hover { background: var(--surface-2); }
 
 .brand {
   display: flex;
@@ -498,7 +518,30 @@ textarea { resize: vertical; min-height: 70px; font-family: var(--font); }
 .kv .k { color: var(--text-secondary); }
 .kv .v { font-weight: 600; font-variant-numeric: tabular-nums; }
 
+/* end-of-survey summary — one block per poll, used on the presenter screen
+   and the participant view alike */
+.summary-block { padding: 16px 0; border-bottom: 1px solid var(--border); }
+.summary-block:last-child { border-bottom: none; }
+.summary-block h3 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 17px;
+  margin: 0 0 12px;
+  color: var(--text-primary);
+}
+
+@media (max-width: 640px) {
+  .wrap { padding: 18px 14px 48px; }
+  .wrap-wide { padding: 18px 14px 48px; }
+  .topbar { padding: 10px 14px; }
+  .brand { font-size: 15px; }
+}
+
 @media (max-width: 560px) {
   h1 { font-size: 24px; }
   .card { padding: 18px; }
+  .hero-title { font-size: 26px; }
+  .btn { font-size: 14px; padding: 12px 18px; }
+  .btn-sm { padding: 8px 12px; font-size: 12px; }
+  .code-chip { font-size: 16px; padding: 7px 12px; }
 }

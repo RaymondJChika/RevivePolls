@@ -37,6 +37,21 @@ to almost any free Node host in a couple of minutes with nothing to install.
 - Participants can **change their answer** any time while a poll is live —
   tapping a different option updates their vote instead of locking them in,
   and the tally moves with them (no double-counting).
+- If the host reveals answers (flips **hide answers** off) while a poll is
+  still live, participants see the running results on their own phone too,
+  right under the picker — not just "submitted!".
+- **End Survey** and **Release Stats** live on the presenter screen (Launch
+  Survey) — not the host dashboard, since ending a survey you haven't
+  launched yet doesn't make sense. **End Survey** stops voting and shows a
+  **results summary** — every poll's final chart, one after another — on the
+  presenter/big screen right away. Participants just see a "survey ended,
+  thanks for taking part" screen until you click **Release Stats**, which
+  pushes that same full summary out to everyone's phone too. Participants
+  always have an **Exit survey** button. Launching another poll afterwards
+  resumes the session if you ended it too early.
+- The presenter screen (Launch Survey) has a **← back button** in the top
+  corner that returns to the host dashboard — handy on a phone, where there's
+  no obvious way back otherwise.
 - **Save as template / Load template** on the host panel lets you reuse the
   same set of questions next time: "Save as template" downloads your current
   poll set as a small `.json` file (questions/options only, no votes);

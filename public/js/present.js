@@ -6,13 +6,27 @@
 const hostToken = location.pathname.split('/').pop();
 let currentState = null;
 
+qs('#p-back-btn').setAttribute('href', `/host/${hostToken}`);
+
 function activeIndex(state) {
   if (!state.polls || !state.activePoll) return -1;
   return state.polls.findIndex((p) => p.id === state.activePoll.id);
 }
 
+function renderSummaryPanel(state) {
+  const panel = qs('#p-panel');
+  panel.classList.add('summary-mode');
+  panel.innerHTML = '';
+  panel.appendChild(el('p', { class: 'eyebrow p-summary-eyebrow' }, ['Survey summary']));
+  panel.appendChild(el('h1', { class: 'p-summary-title' }, ['Final results']));
+  const list = el('div');
+  panel.appendChild(list);
+  renderSurveySummary(list, state.polls || []);
+}
+
 function renderPanel(state) {
   const panel = qs('#p-panel');
+  panel.classList.remove('summary-mode');
   panel.innerHTML = '';
   const polls = state.polls || [];
 
@@ -67,6 +81,28 @@ function render(state) {
   qs('#p-code').textContent = state.code;
   document.title = `${state.name} — Present — Revive Polls`;
   qs('#p-hide-toggle').checked = !!state.hideAnswers;
+  qs('#p-end-survey-btn').style.display = state.ended ? 'none' : '';
+
+  if (state.ended) {
+    qs('#p-bar-nav').style.display = 'none';
+    qs('#p-bar-ended').style.display = '';
+    const releaseBtn = qs('#p-release-stats-btn');
+    const status = qs('#p-release-status');
+    if (state.statsReleased) {
+      releaseBtn.disabled = true;
+      releaseBtn.textContent = '✓ Stats released';
+      status.textContent = 'Participants can see the full results summary on their phones.';
+    } else {
+      releaseBtn.disabled = false;
+      releaseBtn.textContent = 'Release Stats to Participants';
+      status.textContent = 'Participants just see “survey ended” until you release stats.';
+    }
+    renderSummaryPanel(state);
+    return;
+  }
+
+  qs('#p-bar-nav').style.display = '';
+  qs('#p-bar-ended').style.display = 'none';
 
   const polls = state.polls || [];
   const idx = activeIndex(state);
@@ -114,6 +150,26 @@ qs('#p-hide-toggle').addEventListener('change', async (e) => {
   } catch (err) {
     toast(err.message, 'error');
     e.target.checked = !hide;
+  }
+});
+
+qs('#p-end-survey-btn').addEventListener('click', async () => {
+  if (!confirm('End the survey? This stops voting and moves everyone to the "survey ended" screen. You can release the results summary afterwards, and launching another poll later resumes the session.')) return;
+  try {
+    await api('POST', '/api/host/end-survey', { hostToken });
+    toast('Survey ended');
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+});
+
+qs('#p-release-stats-btn').addEventListener('click', async () => {
+  if (currentState && currentState.statsReleased) return;
+  try {
+    await api('POST', '/api/host/release-stats', { hostToken });
+    toast('Results summary released to participants');
+  } catch (e) {
+    toast(e.message, 'error');
   }
 });
 

@@ -295,6 +295,7 @@ function render(state) {
   qs('#participant-count').textContent = `${state.participantCount} participant${state.participantCount === 1 ? '' : 's'} connected`;
   qs('#hide-toggle').checked = !!state.hideAnswers;
   qs('#qa-open-toggle').checked = !!state.qaOpen;
+  qs('#ended-notice').style.display = state.ended ? '' : 'none';
   renderQr(state.code);
   renderActivePoll(state);
   renderPollList(state);

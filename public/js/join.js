@@ -18,6 +18,11 @@ const app = qs('#app');
 function renderShell(state) {
   app.innerHTML = '';
 
+  if (state.ended) {
+    renderSurveyEnded(state);
+    return;
+  }
+
   app.appendChild(el('div', { class: 'center', style: 'margin: 18px 0 22px;' }, [
     el('h1', { style: 'font-size:22px; margin-bottom:2px;' }, [state.name]),
     el('p', { class: 'muted', style: 'font-size:13px;' }, [`${state.participantCount} people here · room ${state.code}`]),
@@ -30,6 +35,35 @@ function renderShell(state) {
   const qaCard = el('div', { class: 'card' });
   qaCard.appendChild(renderQaSection(state));
   app.appendChild(qaCard);
+}
+
+function renderSurveyEnded(state) {
+  if (state.statsReleased) {
+    app.appendChild(el('div', { class: 'center', style: 'margin: 18px 0 22px;' }, [
+      el('p', { class: 'eyebrow' }, ['Survey complete']),
+      el('h1', { style: 'font-size:22px; margin-bottom:2px;' }, [state.name]),
+      el('p', { class: 'muted', style: 'font-size:13px;' }, ['Thanks for taking part — here’s how everyone answered.']),
+    ]));
+
+    const summaryCard = el('div', { class: 'card' });
+    const list = el('div');
+    summaryCard.appendChild(list);
+    renderSurveySummary(list, state.polls || []);
+    app.appendChild(summaryCard);
+  } else {
+    app.appendChild(el('div', { class: 'center', style: 'margin: 18px 0 22px;' }, [
+      el('p', { class: 'eyebrow' }, ['Survey complete']),
+      el('h1', { style: 'font-size:22px; margin-bottom:2px;' }, [state.name]),
+    ]));
+    app.appendChild(el('div', { class: 'card center' }, [
+      el('div', { class: 'glyph', style: 'font-size:36px; margin-bottom:10px;' }, ['🙏']),
+      el('p', { class: 'lede', style: 'margin:0;' }, ['Thanks for taking part! The host will share the results summary here shortly.']),
+    ]));
+  }
+
+  app.appendChild(el('div', { class: 'center', style: 'margin-top:20px;' }, [
+    el('a', { class: 'btn btn-secondary', href: '/' }, ['Exit survey']),
+  ]));
 }
 
 function renderPollSection(state) {
@@ -96,6 +130,17 @@ function renderPollSection(state) {
   frag.appendChild(el('p', { class: 'muted', style: 'font-size:12px; margin-top:14px;' }, [
     myChoice ? 'Tap a different option to change your answer.' : 'Your response is anonymous — you can change it any time while the poll is live.',
   ]));
+
+  // The host can reveal live results mid-poll (flipping the "hide answers"
+  // toggle off) — when they do, show the same running tally here too,
+  // underneath the picker so people can still change their answer.
+  if (!state.hideAnswers) {
+    const liveResults = el('div', { style: 'margin-top:20px; padding-top:16px; border-top:1px solid var(--border);' });
+    liveResults.appendChild(el('p', { class: 'eyebrow', style: 'margin-bottom:10px;' }, ['Live results']));
+    if (poll.type === 'mcq') renderMcqBars(liveResults, poll);
+    else renderRatingBars(liveResults, poll);
+    frag.appendChild(liveResults);
+  }
   return frag;
 }
 

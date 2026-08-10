@@ -64,12 +64,42 @@
   .nav-btn.primary { background: var(--text-primary); color: var(--page-plane); border-color: transparent; }
   .poll-counter { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
   .kbd-hint { font-size: 12px; color: var(--text-muted); }
+  .p-panel.summary-mode { overflow-y: auto; justify-content: flex-start; align-items: stretch; text-align: left; }
+  .p-summary-eyebrow { margin: 0 0 4px; }
+  .p-summary-title { font-size: 32px; margin: 0 0 22px; }
+  .end-survey-btn { color: var(--critical); border-color: color-mix(in srgb, var(--critical) 40%, var(--border-strong)); }
+  .p-ended-bar { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
+  .p-ended-bar .muted { font-size: 13px; }
+  /* This page always has a real bottom bar in view (never scrolled away),
+     so lift the toast above it instead of letting the two overlap. */
+  .toast-host { bottom: 110px; }
+
+  @media (max-width: 720px) {
+    .pstage-top { padding: 10px 16px; }
+    .pstage-brand { font-size: 15px; gap: 6px; }
+    .pstage-main { padding: 0 16px 16px; }
+    .p-panel { padding: 24px 18px; border-radius: 18px; }
+    .p-question { font-size: 24px; margin-bottom: 10px; }
+    .p-summary-title { font-size: 24px; margin-bottom: 16px; }
+    .p-tally { font-size: 13px; padding: 5px 12px; margin-bottom: 18px; }
+    .big-bar-row .bar-label { font-size: 15px; }
+    .big-bar-row .bar-track { height: 14px; }
+    .p-option-plain { font-size: 17px; padding: 10px 0; }
+    .p-scale-hint { font-size: 15px; }
+    .pstage-bar { padding: 12px 16px 18px; gap: 10px; }
+    .kbd-hint { display: none; }
+    .nav-btn { padding: 10px 16px; font-size: 14px; }
+    .switch-label { display: none; }
+  }
 </style>
 </head>
 <body>
   <div class="pstage">
     <div class="pstage-top">
-      <div class="pstage-brand"><span class="brand-logo"><img src="/img/revive-logo-256.png" alt="Revive logo" /></span> <span id="p-room-name">Revive Polls</span></div>
+      <div class="pstage-brand">
+        <a class="back-btn" id="p-back-btn" href="#" title="Back to dashboard">←</a>
+        <span class="brand-logo"><img src="/img/revive-logo-256.png" alt="Revive logo" /></span> <span id="p-room-name">Revive Polls</span>
+      </div>
       <div class="row" style="gap:10px;">
         <span class="code-chip" id="p-code" style="font-size:15px;">-----</span>
         <label class="switch">
@@ -77,6 +107,7 @@
           <span class="track"><span class="thumb"></span></span>
           <span class="switch-label" id="p-hide-label">Hide answers</span>
         </label>
+        <button class="nav-btn end-survey-btn" id="p-end-survey-btn">End Survey</button>
       </div>
     </div>
 
@@ -84,7 +115,7 @@
       <div class="p-panel" id="p-panel"></div>
     </div>
 
-    <div class="pstage-bar">
+    <div class="pstage-bar" id="p-bar-nav">
       <div class="side">
         <button class="nav-btn" id="p-prev-btn">◀ Prev</button>
       </div>
@@ -94,6 +125,13 @@
       </div>
       <div class="side right">
         <button class="nav-btn primary" id="p-next-btn">Next ▶</button>
+      </div>
+    </div>
+
+    <div class="pstage-bar" id="p-bar-ended" style="display:none;">
+      <div class="p-ended-bar">
+        <button class="nav-btn primary" id="p-release-stats-btn">Release Stats to Participants</button>
+        <span class="muted" id="p-release-status">Participants see “survey ended” until you release stats.</span>
       </div>
     </div>
   </div>
